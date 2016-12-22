@@ -6,7 +6,7 @@
 
 
 int screenSetUp();
-int mapSetUp();
+
 
 
 typedef struct Player {
@@ -18,15 +18,21 @@ typedef struct Player {
 typedef struct Room {
   int xPosition;
   int yPosition;
-  Monster ** monsters;
-  Item ** items;
+  int height;
+  int width;
+  //Monster ** monsters;
+  // Item ** items;
 } Room;
 
 
+
+Room ** mapSetUp();
 Player * playerSetUp();
 int handleInput(int input, Player* user);
 int checkPosition(int newY,int newX,Player * user);
 int playerMove(int y, int x, Player* user);
+int drawRoom(Room * room);
+Room * createRoom(int x, int y, int height, int width);
 
 
 int main() {
@@ -58,29 +64,45 @@ int screenSetUp()
   return 1;
 }
 
-int mapSetUp()
+Room ** mapSetUp()
 {
 
-mvprintw(13,13, "--------");
-mvprintw(14,13, "|......|");
-mvprintw(15,13, "|......|");
-mvprintw(16,13, "|......|");
-mvprintw(17,13, "--------");
+Room ** rooms;
+rooms = malloc(sizeof(Room));
 
-mvprintw(13,40, "--------");
-mvprintw(14,40, "|......|");
-mvprintw(15,40, "|......|");
-mvprintw(16,40, "|......|");
-mvprintw(17,40, "|......|");
-mvprintw(18,40, "|......|");
-mvprintw(19,40, "--------");
+rooms[0] = createRoom(13,13,6,8);
+drawRoom(rooms[0]);
 
-mvprintw(5,50, "-----------");
-mvprintw(6,50, "|.........|");
-mvprintw(7,50, "|.........|");
-mvprintw(8,50, "|.........|");
-mvprintw(9,50, "-----------");
+return rooms;
 }
+
+//Room Functions - Also I'm starting to believe that maybe C wasn't the best language for this.
+//I should've used Java
+Room * createRoom(int x, int y, int height, int width)
+{
+Room * newRoom;
+newRoom = malloc(sizeof(Room));
+
+newRoom->xPosition = x;
+newRoom->yPosition = y;
+newRoom->height = height;
+newRoom->width = width;
+
+return newRoom;
+}
+
+int drawRoom(Room * room)
+{
+int x, y;
+
+for(x = room->xPosition; x< (room->xPosition + room->width); x++)
+{
+  mvprintw(room->yPosition,x,"-");
+  mvprintw((room->yPosition + room->height), x, "-");
+
+}
+}
+
 
 
 Player* playerSetUp()
